@@ -22,7 +22,7 @@ The project uses:
 
 ## Prerequisites
 
-- **Python 3.10+** (3.13 is fine, as in your current environment).
+- **Python 3.10+** 
 - **Ollama** installed and running on your machine.
   - Install from the official site: `https://ollama.com`
   - Make sure the model you want (default in this project is `llama3`) is available:
@@ -39,7 +39,7 @@ The project uses:
 1. **Clone or open the project directory**
 
    ```bash
-   cd /Users/arielmoise/Documents/Cyber_Agents
+   cd .../Cyber_Agents
    ```
 
 2. **Create and activate a virtual environment**
@@ -130,7 +130,7 @@ Usage: python agents.py <url>
 ## Quick Start (TL;DR)
 
 ```bash
-cd /Users/arielmoise/Documents/Cyber_Agents
+cd .../Cyber_Agents
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
