@@ -1,0 +1,5 @@
+langchain-core
+requests
+duckduckgo-search
+langchain-community
+ollama
