@@ -42,7 +42,7 @@ def extract_attack_vectors(url, llm=None):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
-        print("Usage: python agents.py <url>")
+        print("Usage: python static_scanner.py <url>")
     else:
         url = sys.argv[1]
         result = extract_attack_vectors(url)

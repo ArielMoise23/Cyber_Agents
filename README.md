@@ -1,22 +1,28 @@
 # Cyber Agents - Web Attack Vector Analyzer
 
-This project is a small Python tool that:
+This project is a small Python toolkit that provides:
 
-- Fetches the HTML content of a given URL.
-- Sends the page content to a local LLM running via Ollama.
-- Asks the model to identify **potential security vulnerabilities / attack vectors** (e.g., XSS, SQL injection, directory traversal, authentication issues) and prints a short explanation for each.
+- **Static web page scanner** (`static_scanner.py`):  
+  Fetches the HTML content of a given URL, sends it to a local LLM running via Ollama, and asks it to identify **potential security vulnerabilities / attack vectors** (e.g., XSS, SQL injection, directory traversal, authentication issues) with short explanations.
 
-The core logic lives in `agents.py`, which defines:
-
-- `fetch_page_content(url)`: downloads the web page.
-- `attack_prompt`: a LangChain `PromptTemplate` describing how to analyze the page.
-- `extract_attack_vectors(url)`: orchestrates fetching the page and sending it to the LLM.
+- **Port scanner + strategy helper** (`port_scanner.py`):  
+  Concurrently scans a set of common web-related ports (by default the top 10 web ports such as 80, 443, 8080, 8000, 8443, etc.) on a domain, reports which are open/closed, and then asks the LLM to propose a **defensive testing strategy** based on the findings.
 
 The project uses:
 
 - `requests` for HTTP requests.
-- `langchain-core` and `langchain-community` for prompt and model integration.
+- `langchain-core` and `langchain-community` for prompt/model integration.
 - `ChatOllama` to talk to a local Ollama model (e.g., `llama3`).
+
+---
+
+## Educational / Defensive Purpose
+
+These scripts are meant for **learning and defensive security practice**:
+
+- They provide **guidance**, not a guarantee of vulnerabilities.
+- Run them only against systems you own or have explicit permission to test.
+- They do not perform exploitation; they analyze fetched content / scan results and suggest safe next steps.
 
 ---
 
@@ -62,7 +68,7 @@ The project uses:
    ollama serve
    ```
 
-   If you prefer another model (e.g., `llama3.2` or `qwen2.5`), change the model name in `agents.py`:
+If you prefer another model (e.g., `llama3.2` or `qwen2.5`), change the `ChatOllama(model="...")` line in `static_scanner.py` and/or `port_scanner.py`:
 
    ```python
    llm = ChatOllama(model="llama3", temperature=0.2)
@@ -72,10 +78,12 @@ The project uses:
 
 ## Usage
 
-With the virtual environment active and Ollama running:
+Assuming the virtual environment is active and Ollama is running:
+
+### 1. Static web page scanner (`static_scanner.py`)
 
 ```bash
-python agents.py "https://example.com"
+python static_scanner.py "https://example.com"
 ```
 
 What happens:
@@ -88,21 +96,51 @@ What happens:
 2. The local LLM analyzes the page content using the `attack_prompt`.
 3. The identified **attack vectors** and explanations are printed to the terminal.
 
-### Command-line arguments
-
-- **Required**: a single URL to analyze.
-
 If you call the script without arguments, you will see:
 
 ```bash
-Usage: python agents.py <url>
+Usage: python static_scanner.py <url>
 ```
+
+### 2. Port scanner + testing strategy (`port_scanner.py`)
+
+Scan the default set of common web ports on a domain:
+
+```bash
+python port_scanner.py example.com
+```
+
+Scan a custom list of ports (comma-separated):
+
+```bash
+python port_scanner.py example.com 80,443,8080
+```
+
+What happens:
+
+1. `port_scanner.py` concurrently scans the chosen ports and reports which are open or closed.
+2. The scan result is passed to the LLM, which produces a short **scan report** and a list of **next steps for security testing** (defensive, safe guidance).
+
+If you call the script incorrectly, you’ll see:
+
+```bash
+Usage: python port_scanner.py <domain> [optional: comma-separated-ports]
+```
+
+---
+
+## Recommendations (How to Use)
+
+- Use `port_scanner.py` first to quickly check which common web ports are reachable on a domain (a good “recon” starting point).
+- Use `static_scanner.py` when you have a specific URL you want to inspect (it fetches the page content and asks the model for likely attack vectors).
+- For best results, run recon (ports) first, then run static analysis on any URLs you identify/reach.
+- Only test systems you own or have explicit permission to test.
 
 ---
 
 ## Customization
 
-- **Change the model**: edit the `ChatOllama` line in `agents.py`:
+- **Change the model**: edit the `ChatOllama` line in `static_scanner.py` and/or `port_scanner.py`:
 
   ```python
   llm = ChatOllama(model="llama3", temperature=0.2)
@@ -113,7 +151,7 @@ Usage: python agents.py <url>
   - Decrease towards `0.0` for more deterministic outputs.
 
 - **Modify the security analysis prompt**:
-  - Edit the `attack_prompt` template string in `agents.py` to:
+  - Edit the `attack_prompt` template string in `static_scanner.py` to:
     - Focus on specific vulnerability classes.
     - Ask for different formats (JSON, bullet list, severity ratings, etc.).
 
@@ -136,6 +174,9 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ollama pull llama3
 ollama serve    # in another terminal, if needed
-python agents.py "https://example.com"
+# Optional: recon step before static analysis
+python port_scanner.py example.com
+
+python static_scanner.py "https://example.com"
 ```
 
