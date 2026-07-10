@@ -1,5 +1,8 @@
 langchain-core
 requests
 duckduckgo-search
-langchain-community
 ollama
+langchain-ollama
+beautifulsoup4
+dnspython
+python-whois
