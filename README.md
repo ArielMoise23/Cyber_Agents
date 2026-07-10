@@ -128,8 +128,8 @@ python main.py example.com
 
 Runs all 9 agents in order, crawls the target for pages/forms/JS/endpoints, and writes:
 
-- `reports/{domain}_{timestamp}.json` — full structured findings
-- `reports/{domain}_{timestamp}.md` — executive summary + per-agent findings tables
+- `reports/{domain}_{dd-mm-yy}_{hh-mm}_report.json` — full structured findings
+- `reports/{domain}_{dd-mm-yy}_{hh-mm}_report.md` — executive summary + per-agent findings tables
 - A console summary of finding counts per agent
 
 Options:

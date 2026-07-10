@@ -8,8 +8,8 @@ SEVERITY_ORDER = {"high": 0, "medium": 1, "low": 2, "info": 3}
 
 
 def _report_stem(ctx: ScanContext) -> str:
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    return f"{ctx.domain}_{timestamp}"
+    stamp = datetime.now(timezone.utc).strftime("%d-%m-%y_%H-%M")
+    return f"{ctx.domain}_{stamp}_report"
 
 
 def _to_dict(ctx: ScanContext, synthesis: str | None) -> dict:
